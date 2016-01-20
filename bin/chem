@@ -1,0 +1,162 @@
+#!/usr/bin/env ruby
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'gli'
+require 'io/wait'
+require 'chem'
+
+include GLI::App
+
+program_desc 'chem is a tool for list manipulation and shell automation'
+
+version Chem::VERSION
+
+config_file = Chem::Config.new
+
+subcommand_option_handling :normal
+arguments :strict
+preserve_argv
+# sort_help :manually
+
+switch [:verbose, :V], :desc => 'Display verbose output', :negatable => false
+
+desc 'Create an empty .chemrc file'
+command :init do |c|
+  c.action do |global_options,options,args|
+    config_file.init
+  end
+end
+
+desc 'Create a fake .chemrc'
+command :stub do |c|
+  c.action do |global_options,options,args|
+    config_file.init
+    config_file.config = {
+      "list1" => ['abc', 'def', 'ghi', 'jkl'],
+      "list-2" => [123, 345, 567, 789],
+      "list_3" => [:a1, :b2, :c3, :d4],
+    }
+    config_file.save
+  end
+end
+
+desc 'List all collections'
+command :list do |c|
+  c.action do |global_options,options,args|
+    config_file.load
+    puts config_file.list
+  end
+end
+
+desc 'Show the contents of a collection'
+arg_name '<name>'
+command :out do |c|
+  c.action do |global_options,options,args|
+    config_file.load
+    if args[0]
+      collection = config_file.get(args[0])
+      if collection
+        if global_options[:verbose]
+          collection.each do |item|
+          end
+          #tp Hash[*(0...collection.length).to_a.zip(collection).flatten]
+        else
+          puts collection.join("\n")
+        end
+      end
+    end
+  end
+end
+
+desc 'Create or modify a collection with data from stdin'
+arg_name '<name>'
+command :in do |c|
+  c.action do |global_options,options,args|
+    config_file.load
+    if args[0]
+      if config_file.exist? args[0]
+        puts "A collection named \"#{args[0]}\" already exists"
+        exit 1
+      end
+      input = [] 
+      if $stdin.ready?
+        $stdin.each {|line| input << line }
+      end
+
+      config_file.set(args[0], input)
+      config_file.save
+      puts "Added new collection \"#{args[0]}\""
+    else
+      puts "Specify a name for the new collection."
+      exit 1
+    end
+  end
+end
+
+desc 'Rename a collection'
+arg_name '<old> <new>'
+command :rename do |c|
+  c.action do |global_options,options,args|
+    if args[0] && args[1]
+      config_file.load
+      unless config_file.exist? args[0]
+        puts "No collection named \"#{args[0]}\" exists."
+        exit 1
+      end
+        
+      if config_file.exist? args[1]
+        puts "A collection named \"#{args[1]}\" already exists."
+        exit 1
+      end
+
+      config_file.set(args[1], config_file.get(args[0]))
+      config_file.delete(args[0])
+      config_file.save
+    end
+  end
+end
+
+desc 'Delete a collection'
+arg_name '<name>'
+command :drop do |c|
+  c.action do |global_options,options,args|
+    if args[0]
+      unless config_file.exist? args[0]
+        puts "No collection named \"#{args[0]}\" exists."
+        exit 1
+      end
+
+      config_file.delete args[0]
+      config_file.save
+    else
+      puts "Specify the collection to delete"
+      exit 1
+    end
+  end
+end
+
+desc 'Edit a collection in vi'
+arg_name '<name>'
+command :edit do |c|
+  c.action do |global_options,options,args|
+    puts "edit command ran"
+  end
+end
+
+desc 'Execute a command using substitution'
+arg_name '<cmd>'
+command :exec do |c|
+  c.action do |global_options,options,args|
+    puts "exec command ran"
+  end
+end
+
+desc 'Execute a collection as a list of commands with substitution'
+arg_name '<name>'
+command :run do |c|
+  c.action do |global_options,options,args|
+    puts "run command ran"
+  end
+end
+
+exit run(ARGV)

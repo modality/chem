@@ -1,0 +1,6 @@
+= chem
+
+Describe your project here
+
+:include:chem.rdoc
+
