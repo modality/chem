@@ -36,7 +36,7 @@ module Chem
     end
 
     def get(name)
-      @config[name]
+      exist?(name) ? Collection.new(name, @config[name]) : nil
     end
 
     def set(name, arr)
