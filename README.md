@@ -37,6 +37,7 @@ COMMANDS
 ```
 
 ## Installation
+`chem` is written in Ruby.
 
 ```
 git clone git@github.com:modality/chem.git
