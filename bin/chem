@@ -20,6 +20,7 @@ preserve_argv
 
 pre do
   chem_config.load
+  true
 end
 
 switch [:verbose, :V], :desc => 'Display verbose output', :negatable => false
@@ -65,8 +66,6 @@ command :out do |c|
         else
           puts collection
         end
-      else
-        raise "Invalid collection \"#{args[0]}\""
       end
     end
   end
@@ -89,7 +88,7 @@ arg_name '<name>'
 command :in do |c|
   c.action do |global_options,options,args|
     raise "Specify a name for the new collection." unless args[0]
-    raise "A collection named \"#{args[0]}\" already exists" if chem_config.exist? args[0]
+    # raise "A collection named \"#{args[0]}\" already exists" if chem_config.exist? args[0]
 
     while !$stdin.ready?
       sleep 0.01
@@ -168,8 +167,9 @@ desc 'Execute a command or set of commands with substitution (use quotes)'
 arg_name '<cmd_1> ... <cmd_n>'
 command :exec do |c|
   c.action do |global_options,options,args|
-    collection = Chem::Collection.new(nil, args)
-    puts collection.run(chem_config)
+    collection = Chem::Collection.new('', args)
+    commands = collection.evaluate(chem_config)
+    Chem::Helpers.execute_list commands
   end
 end
 

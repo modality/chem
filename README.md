@@ -1,7 +1,5 @@
 # chem
 
-`chem` is a tool for list manipulation and shell automation.
-
 ```
 $ chem help
 NAME
@@ -32,4 +30,83 @@ COMMANDS
     run    - Execute a collection as a list of commands with substitution
     run1   - Execute a single command from a collection with substitution
     runN   - Execute a collection's Nth set of commands with substitution
+```
+
+## Installation
+
+```
+git clone git@github.com:modality/chem.git
+cd chem
+rake install
+```
+
+## Initialization: `init`
+Create a new `.chemrc` file in the current directory to use `chem`.
+
+```
+$ chem init
+Initialized empty .chemrc file at ~/.chemrc
+```
+
+## Piping: `in` and `out`
+Pipe to and from `chem`.
+```
+$ echo -e "12\n23\n34" | chem in foo
+Added new collection "foo"
+
+$ chem out foo
+12
+23
+34
+
+$ chem out foo | grep 2
+12
+23
+```
+
+## Execution: `exec`, `run`, `run1`, and `runN`
+Now for some advanced substitution techniques. These commands execute
+in the context of the current `.chemrc` file. Text with angle brackets
+will be replaced with values from that collection.
+
+```
+$ echo -e "chem\ngem\ngarbage" | chem in vals && chem out vals
+Added new collection "vals"
+chem
+gem
+garbage
+
+$ echo -e "echo \"filenames containing <vals>\"\n\
+ls -al | grep -i <vals>" | chem in val_user
+Added new collection "val_user"
+
+$ chem out val_user
+echo "filenames containing <vals>"
+ls -al | grep -i <vals>
+
+$ chem exec "echo <vals>"
+chem
+gem
+garbage
+
+$ chem run val_user
+filenames containing chem
+-rw-r--r--   1 michaelhansen  staff   743 Jan 25 20:06 .chemrc
+-rw-r--r--   1 michaelhansen  staff   713 Jan 25 19:31 chem.gemspec
+filenames containing gem
+-rw-r--r--   1 michaelhansen  staff    38 Jan  9 08:35 Gemfile
+-rw-r--r--   1 michaelhansen  staff  1074 Jan 24 15:29 Gemfile.lock
+-rw-r--r--   1 michaelhansen  staff   713 Jan 25 19:31 chem.gemspec
+filenames containing garbage
+
+$ chem run1 val_user 0
+filenames containing chem
+filenames containing gem
+filenames containing garbage
+
+$ chem runN val_user 1
+filenames containing gem
+-rw-r--r--   1 michaelhansen  staff    38 Jan  9 08:35 Gemfile
+-rw-r--r--   1 michaelhansen  staff  1074 Jan 24 15:29 Gemfile.lock
+-rw-r--r--   1 michaelhansen  staff   713 Jan 25 19:31 chem.gemspec
 ```

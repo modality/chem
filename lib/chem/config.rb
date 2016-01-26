@@ -6,10 +6,9 @@ module Chem
 
     def load
       if File.exist? '.chemrc'
-        @config = YAML.load(File.read('.chemrc'))
+        @config = YAML.load(File.read('.chemrc')) || {}
       else
-        puts "No .chemrc file exists. Run `chem init`"
-        exit 1
+        raise "No .chemrc file exists. Run `chem init`"
       end
     end
 
@@ -19,8 +18,7 @@ module Chem
     
     def init 
       if File.exist? '.chemrc'
-        puts ".chemrc file already exists"
-        exit 1
+        raise ".chemrc file already exists"
       else
         File.write('.chemrc', '')
         puts "Initialized empty .chemrc file at #{File.join(Dir.pwd, '.chemrc')}"

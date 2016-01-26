@@ -10,6 +10,6 @@ end
 task :install do
   `rake gem`
   `sudo gem uninstall chem`
-  `sudo gem install chem-#{Chem::VERSION}.gem`
+  `sudo gem install pkg/chem-#{Chem::VERSION}.gem`
   `rake clobber`
 end
