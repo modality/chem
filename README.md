@@ -84,11 +84,16 @@ $ chem out val_user
 echo "filenames containing <vals>"
 ls -al | grep -i <vals>
 
-$ chem exec "echo <vals>"
-chem
-gem
-garbage
+# Execute commands from the command line
+$ chem exec "echo 0 <vals>" "echo 1 <vals>"
+0 chem
+1 chem
+0 gem
+1 gem
+0 garbage
+1 garbage
 
+# Execute a collection of commands
 $ chem run val_user
 filenames containing chem
 -rw-r--r--   1 michaelhansen  staff   743 Jan 25 20:06 .chemrc
@@ -99,6 +104,7 @@ filenames containing gem
 -rw-r--r--   1 michaelhansen  staff   713 Jan 25 19:31 chem.gemspec
 filenames containing garbage
 
+# Execute a single line in a collection as a command
 $ chem -V out val_user
 id | value
 0  | echo "filenames containing <vals>"
@@ -109,6 +115,7 @@ filenames containing chem
 filenames containing gem
 filenames containing garbage
 
+# Execute a collection of commands, using the Nth substitution
 $ chem -V out vals
 id | value
 0  | chem
