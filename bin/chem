@@ -33,20 +33,6 @@ command :init do |c|
   end
 end
 
-desc 'Create a fake .chemrc'
-skips_pre
-command :stub do |c|
-  c.action do |global_options,options,args|
-    chem_config.init
-    chem_config.config = {
-      "list1" => ['abc', 'def', 'ghi', 'jkl'],
-      "list-2" => [123, 345, 567, 789],
-      "list_3" => [:a1, :b2, :c3, :d4],
-    }
-    chem_config.save
-  end
-end
-
 desc 'List all collections'
 command :list do |c|
   c.action do |global_options,options,args|
