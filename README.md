@@ -40,7 +40,7 @@ cd chem
 rake install
 ```
 
-## Initialization: `init`
+## Create a workspace: `init`
 Create a new `.chemrc` file in the current directory to use `chem`.
 
 ```
