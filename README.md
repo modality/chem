@@ -1,4 +1,4 @@
-= chem
+# chem
 
 `chem` is a tool for list manipulation and shell automation.
 
