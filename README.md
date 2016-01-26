@@ -1,5 +1,9 @@
 # chem
 
+Repeating yourself on the command line, but not enough to write a bash script?
+
+**`chem` can help.**
+
 ```
 $ chem help
 NAME
