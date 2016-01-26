@@ -1,6 +1,6 @@
 # chem
 
-Repeating yourself on the command line, but not enough to write a bash script?
+Repeating yourself on the command line, but not enough to write a shell script?
 
 **`chem` can help.**
 
