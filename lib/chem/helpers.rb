@@ -1,6 +1,22 @@
+require 'Open3'
+
 module Chem
   class Helpers
     ENTITY_REGEX = /<([\w.-]+)>/
+
+    def self.execute_list(lines)
+      lines.each do |line|
+        Open3.popen3(line) do |stdin, stdout, stderr, wait_thr|
+          exit_status = wait_thr.value
+          while out = stdout.gets do
+            STDOUT.puts out
+          end
+          while err = stderr.gets do
+            STDERR.puts err
+          end
+        end
+      end
+    end
     
     def self.entities(lines)
       ents = []
@@ -13,7 +29,7 @@ module Chem
 
     def self.replace(line, content)
       line.gsub(ENTITY_REGEX) do |match|
-        content[match[1]]
+        content[$1]
       end
     end
 

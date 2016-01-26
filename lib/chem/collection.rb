@@ -6,7 +6,32 @@ module Chem
     end
 
     def entities
-      Helpers.entities(@lines)
+      @entities ||= Helpers.entities(@lines)
+    end
+
+    def evaluate(chem_config, index_only = nil)
+      output = []
+      if entities.size > 0
+        content = {}
+        entities.each do |e|
+          content[e] = chem_config.get(e)
+          content[e] = content[e].evaluate(chem_config)
+        end
+        if !index_only.nil?
+          output.concat(@lines.map do |line|
+            Helpers.replace(line, Hash[content.keys.map{|k| [k, content[k][index_only]]}])
+          end)
+        else
+          content.first[1].size.times do |index|
+            output.concat(@lines.map do |line|
+              Helpers.replace(line, Hash[content.keys.map{|k| [k, content[k][index]]}])
+            end)
+          end
+        end
+      else
+        output = @lines
+      end
+      output
     end
 
     def validate(chem_config, stack = [])
@@ -23,7 +48,7 @@ module Chem
     end
 
     def check_references!(chem_config, stack)
-      stack = stack.concat([@name])
+      stack = stack.concat([@name]).compact
       intersect = entities & stack
       raise "Circular reference(s) to \"#{intersect.join('", "')}\" found in \"#{@name}\"" if intersect.length > 0 
 

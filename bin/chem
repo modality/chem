@@ -65,6 +65,8 @@ command :out do |c|
         else
           puts collection
         end
+      else
+        raise "Invalid collection \"#{args[0]}\""
       end
     end
   end
@@ -153,6 +155,8 @@ command :edit do |c|
         chem_config.set(args[0], text.split("\n"))
         chem_config.save
         puts "Edited collection \"#{args[0]}\""
+      else
+        raise "Invalid collection \"#{args[0]}\""
       end
     else
       raise "Specify a name for the collection to edit."
@@ -160,11 +164,12 @@ command :edit do |c|
   end
 end
 
-desc 'Execute a command using substitution'
-arg_name '<cmd>'
+desc 'Execute a command or set of commands with substitution (use quotes)'
+arg_name '<cmd_1> ... <cmd_n>'
 command :exec do |c|
   c.action do |global_options,options,args|
-    puts "exec command ran"
+    collection = Chem::Collection.new(nil, args)
+    puts collection.run(chem_config)
   end
 end
 
@@ -174,7 +179,10 @@ command :run do |c|
   c.action do |global_options,options,args|
     collection = chem_config.get(args[0])
     if collection
-      collection.validate(chem_config)
+      commands = collection.evaluate(chem_config)
+      Chem::Helpers.execute_list commands
+    else
+      raise "Invalid collection \"#{args[0]}\""
     end
   end
 end
@@ -183,7 +191,37 @@ desc 'Execute a single command from a collection with substitution'
 arg_name '<name> <id>'
 command :run1 do |c|
   c.action do |global_options,options,args|
-    puts "run1 command ran"
+    collection = chem_config.get(args[0])
+    if collection
+      if args[1].to_i.to_s == args[1]
+        collection = Chem::Collection.new(nil, [collection[args[1].to_i]])
+        commands = collection.evaluate(chem_config)
+        Chem::Helpers.execute_list commands
+      else
+        raise "Specify an integer id"
+      end
+    else
+      raise "Invalid collection \"#{args[0]}\""
+    end
+  end
+end
+
+desc 'Execute a collection\'s Nth set of commands with substitution'
+arg_name '<name> <index>'
+command :runN do |c|
+  c.action do |global_options,options,args|
+    collection = chem_config.get(args[0])
+    if collection
+      if args[1].to_i.to_s == args[1]
+        collection.validate(chem_config)
+        commands = collection.evaluate(chem_config, args[1].to_i)
+        Chem::Helpers.execute_list commands
+      else
+        raise "Specify an integer id"
+      end
+    else
+      raise "Invalid collection \"#{args[0]}\""
+    end
   end
 end
 
