@@ -1,5 +1,0 @@
-= chem
-
-Generate this with
-    chem rdoc
-After you have described your command line interface

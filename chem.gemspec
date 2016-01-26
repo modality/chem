@@ -3,19 +3,13 @@ require File.join([File.dirname(__FILE__),'lib','chem','version.rb'])
 spec = Gem::Specification.new do |s| 
   s.name = 'chem'
   s.version = Chem::VERSION
-  s.author = 'Your Name Here'
-  s.email = 'your@email.address.com'
-  s.homepage = 'http://your.website.com'
+  s.author = 'Michael Hansen'
+  s.email = 'modality2@gmail.com'
+  s.homepage = 'http://subtlefish.com'
   s.platform = Gem::Platform::RUBY
-  s.summary = 'A description of your project'
+  s.summary 'chem is a tool for list manipulation and shell automation'
   s.require_paths << 'lib'
-  s.has_rdoc = true
-  s.extra_rdoc_files = ['README.rdoc','chem.rdoc']
-  s.rdoc_options << '--title' << 'chem' << '--main' << 'README.rdoc' << '-ri'
   s.bindir = 'bin'
   s.executables << 'chem'
-  s.add_development_dependency('rake')
-  s.add_development_dependency('rdoc')
-  s.add_development_dependency('aruba')
   s.add_runtime_dependency('gli','2.13.4')
 end
