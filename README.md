@@ -99,10 +99,21 @@ filenames containing gem
 -rw-r--r--   1 michaelhansen  staff   713 Jan 25 19:31 chem.gemspec
 filenames containing garbage
 
+$ chem -V out val_user
+id | value
+0  | echo "filenames containing <vals>"
+1  | ls -al | grep -i <vals>
+
 $ chem run1 val_user 0
 filenames containing chem
 filenames containing gem
 filenames containing garbage
+
+$ chem -V out vals
+id | value
+0  | chem
+1  | gem
+2  | garbage
 
 $ chem runN val_user 1
 filenames containing gem
