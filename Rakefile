@@ -8,8 +8,8 @@ Gem::PackageTask.new(spec) do |pkg|
 end
 
 task :install do
-  `rake gem`
-  `sudo gem uninstall chem`
-  `sudo gem install pkg/chem-#{Chem::VERSION}.gem`
-  `rake clobber`
+  sh "rake gem"
+  sh "sudo gem uninstall chem"
+  sh "sudo gem install pkg/chem-#{Chem::VERSION}.gem"
+  sh "rake clobber"
 end
