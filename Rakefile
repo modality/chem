@@ -1,10 +1,10 @@
-require 'rake/clean'		
-require 'rubygems'		
+require 'rake/clean'
+require 'rubygems'
 require 'rubygems/package_task'
 
-spec = eval(File.read('chem.gemspec'))		
+spec = eval(File.read('chem.gemspec'))
 		
-Gem::PackageTask.new(spec) do |pkg|		
+Gem::PackageTask.new(spec) do |pkg|
 end
 
 task :install do
