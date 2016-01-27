@@ -42,7 +42,7 @@ COMMANDS
 ```
 git clone git@github.com:modality/chem.git
 cd chem
-bundle install vendor/bundle
+bundle install --path vendor/bundle
 rake install
 ```
 
