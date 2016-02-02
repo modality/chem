@@ -40,7 +40,7 @@ command :list do |c|
   end
 end
 
-desc 'Show the contents of a collection'
+desc 'Show the contents of a collection (verbose mode = show ids)'
 arg_name '<name>'
 command :out do |c|
   c.action do |global_options,options,args|
@@ -159,21 +159,25 @@ command :exec do |c|
   end
 end
 
-desc 'Execute a collection as a list of commands with substitution'
+desc 'Execute a collection as a list of commands with substitution (verbose mode = print list)'
 arg_name '<name>'
 command :run do |c|
   c.action do |global_options,options,args|
     collection = chem_config.get(args[0])
     if collection
       commands = collection.evaluate(chem_config)
-      Chem::Helpers.execute_list commands
+      if global_options[:verbose]
+        puts commands
+      else
+        Chem::Helpers.execute_list commands
+      end
     else
       raise "Invalid collection \"#{args[0]}\""
     end
   end
 end
 
-desc 'Execute a single command from a collection with substitution'
+desc 'Execute a single command from a collection with substitution (verbose mode = print list)'
 arg_name '<name> <id>'
 command :run1 do |c|
   c.action do |global_options,options,args|
@@ -182,7 +186,11 @@ command :run1 do |c|
       if args[1].to_i.to_s == args[1]
         collection = Chem::Collection.new(nil, [collection[args[1].to_i]])
         commands = collection.evaluate(chem_config)
-        Chem::Helpers.execute_list commands
+        if global_options[:verbose]
+          puts commands
+        else
+          Chem::Helpers.execute_list commands
+        end
       else
         raise "Specify an integer id"
       end
@@ -192,7 +200,7 @@ command :run1 do |c|
   end
 end
 
-desc 'Execute a collection\'s Nth set of commands with substitution'
+desc 'Execute a collection\'s Nth set of commands with substitution (verbose mode = print list)'
 arg_name '<name> <index>'
 command :runN do |c|
   c.action do |global_options,options,args|
@@ -201,7 +209,11 @@ command :runN do |c|
       if args[1].to_i.to_s == args[1]
         collection.validate(chem_config)
         commands = collection.evaluate(chem_config, args[1].to_i)
-        Chem::Helpers.execute_list commands
+        if global_options[:verbose]
+          puts commands
+        else
+          Chem::Helpers.execute_list commands
+        end
       else
         raise "Specify an integer id"
       end
