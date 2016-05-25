@@ -72,6 +72,8 @@ end
 desc 'Create or modify a collection with data from stdin'
 arg_name '<name>'
 command :in do |c|
+  c.desc 'Append stdin to current collection instead of overwriting'
+  c.switch [:a,:append]
   c.action do |global_options,options,args|
     raise "Specify a name for the new collection." unless args[0]
     # raise "A collection named \"#{args[0]}\" already exists" if chem_config.exist? args[0]
@@ -86,9 +88,17 @@ command :in do |c|
     end
     input = input.split "\n"
 
+    verb = "Added new"
+    verb = "Replaced existing" if chem_config.exist?(args[0]) 
+
+    if options[:append] && chem_config.exist?(args[0])
+      input = chem_config.get(args[0]) + input
+      verb = "Added to existing"
+    end
+
     chem_config.set(args[0], input)
     chem_config.save
-    puts "Added new collection \"#{args[0]}\""
+    puts "#{verb} collection \"#{args[0]}\""
   end
 end
 
