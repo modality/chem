@@ -1,21 +1,9 @@
-require 'Open3'
-
 module Chem
   class Helpers
     ENTITY_REGEX = /<([\w.-]+)>/
 
     def self.execute_list(lines)
-      lines.each do |line|
-        Open3.popen3(line) do |stdin, stdout, stderr, wait_thr|
-          exit_status = wait_thr.value
-          while out = stdout.gets do
-            STDOUT.puts out
-          end
-          while err = stderr.gets do
-            STDERR.puts err
-          end
-        end
-      end
+      STDOUT.puts %x{ #{lines.join("\n")} }
     end
     
     def self.entities(lines)
